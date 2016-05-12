@@ -3,7 +3,7 @@ defmodule MixApidoc.Mixfile do
 
   def project do
     [app: :mix_apidoc,
-     version: "0.1.0",
+     version: "0.2.0",
      description: "A mix task that triggers apidoc to create documentation " <>
                   "for RESTful web APIs from inline code annotations.",
      package: package,
@@ -14,7 +14,7 @@ defmodule MixApidoc.Mixfile do
   end
 
   def package do
-    [maintainers: ["Sławomir Dąbek"],
+    [maintainers: ["Sławomir Dąbek", "Samar Dhwoj Acharya"],
      licenses: ["MIT"],
      links: %{"GitHub" => "https://github.com/sldab/mix_apidoc"}]
   end
