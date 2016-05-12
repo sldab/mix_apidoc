@@ -4,6 +4,7 @@ defmodule Mix.Tasks.Compile.Apidoc do
   @moduledoc File.read!("README.md")
   @shortdoc "Create documentation for RESTful web APIs"
 
+  @default_node_bin "node"
   @default_apidoc_bin  Path.join(~w"node_modules apidoc bin apidoc")
   @default_input_dir Path.join(~w"web controllers")
   @default_output_dir  Path.join(~w"priv static apidoc")
@@ -16,6 +17,7 @@ defmodule Mix.Tasks.Compile.Apidoc do
       Mix.raise "Please specify an apidoc config in your mix.exs"
     end
 
+    node_bin    = config[:node_bin] || @default_node_bin
     apidoc_bin  = config[:apidoc_bin] || Path.join(System.cwd(), @default_apidoc_bin)
     input_dir   = config[:input_dir]  || @default_input_dir
     output_dir  = config[:output_dir] || @default_output_dir
@@ -23,6 +25,7 @@ defmodule Mix.Tasks.Compile.Apidoc do
     config_json =
       config
       |> Enum.into(%{})
+      |> Map.delete(:node_bin)
       |> Map.delete(:apidoc_bin)
       |> Map.delete(:input_dir)
       |> Map.delete(:output_dir)
@@ -40,15 +43,15 @@ defmodule Mix.Tasks.Compile.Apidoc do
     File.close apidoc_json
 
     params = ["-i", input_dir, "-o", output_dir, "-c", build_dir]
-    run_apidoc(apidoc_bin, params)
+    run_apidoc(node_bin, apidoc_bin, params)
   end
 
-  defp run_apidoc(apidoc_bin, params) do
+  defp run_apidoc(node_bin, apidoc_bin, params) do
     if File.exists? apidoc_bin do
-      case System.cmd(apidoc_bin, params) do
+      case System.cmd(node_bin, [apidoc_bin | params]) do
         {_, 0} ->
           Mix.Shell.IO.info "Generated apidoc"
-        error ->
+        _error ->
           Mix.raise "apidoc responded with an error"
       end
     else
