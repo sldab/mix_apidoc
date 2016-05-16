@@ -24,6 +24,6 @@ defmodule MixApidoc.Mixfile do
   end
 
   def deps do
-    [poison: "~> 1.5"]
+    [poison: "~> 2.0"]
   end
 end
