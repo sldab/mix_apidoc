@@ -3,7 +3,7 @@ defmodule MixApidoc.Mixfile do
 
   def project do
     [app: :mix_apidoc,
-     version: "0.2.0",
+     version: "0.2.1",
      description: "A mix task that triggers apidoc to create documentation " <>
                   "for RESTful web APIs from inline code annotations.",
      package: package,
