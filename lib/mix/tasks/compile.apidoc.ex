@@ -47,17 +47,26 @@ defmodule Mix.Tasks.Compile.Apidoc do
   end
 
   defp run_apidoc(node_bin, apidoc_bin, params) do
-    if File.exists? apidoc_bin do
-      case System.cmd(node_bin, [apidoc_bin | params]) do
-        {_, 0} ->
-          Mix.Shell.IO.info "Generated apidoc"
-        _error ->
-          Mix.raise "apidoc responded with an error"
-      end
+    if File.exists?(apidoc_bin) do
+      exec_apidoc(node_bin, apidoc_bin, params)
     else
-      Mix.raise "Could not find apidoc executable '#{apidoc_bin}'. " <>
-                "Run 'npm install' or set the 'apidoc_bin' config parameter " <>
-                "in your 'mix.exs' to a different apidoc executable."
+      apidoc_global = System.find_executable(apidoc_bin)
+      if apidoc_global |> is_nil do
+        Mix.raise "Could not find apidoc executable '#{apidoc_bin}'. " <>
+                  "Run 'npm install' or set the 'apidoc_bin' config parameter " <>
+                  "in your 'mix.exs' to a different apidoc executable."
+      else
+        exec_apidoc(node_bin, apidoc_global, params)
+      end
     end
   end
+
+  defp exec_apidoc(node_bin, apidoc_bin, params) do
+    node_bin
+    |> System.cmd([apidoc_bin | params])
+    |> _handle_result
+  end
+
+  defp _handle_result({_, 0}), do: Mix.Shell.IO.info "Generated apidoc"
+  defp _handle_result(_error), do: Mix.raise "apidoc responded with an error"
 end
