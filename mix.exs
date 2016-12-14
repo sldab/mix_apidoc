@@ -10,6 +10,7 @@ defmodule MixApidoc.Mixfile do
      elixir: "~> 1.0",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
+     docs: [extras: ["README.md"]],
      deps: deps]
   end
 
@@ -24,6 +25,10 @@ defmodule MixApidoc.Mixfile do
   end
 
   def deps do
-    [poison: "~> 1.5 or ~> 2.0"]
+    [
+      {:poison, "~> 1.5 or ~> 2.0 or ~> 3.0"},
+      {:earmark, "~> 0.1", only: :dev},
+      {:ex_doc, "~> 0.11", only: :dev}
+    ]
   end
 end
