@@ -3,7 +3,7 @@ defmodule MixApidoc.Mixfile do
 
   def project do
     [app: :mix_apidoc,
-     version: "0.2.1",
+     version: "0.3.0",
      description: "A mix task that triggers apidoc to create documentation " <>
                   "for RESTful web APIs from inline code annotations.",
      package: package,
@@ -27,7 +27,7 @@ defmodule MixApidoc.Mixfile do
   def deps do
     [
       {:poison, "~> 1.5 or ~> 2.0 or ~> 3.0"},
-      {:earmark, "~> 0.1", only: :dev},
+      {:earmark, "~> 0.1 or ~> 1.0", only: :dev},
       {:ex_doc, "~> 0.11", only: :dev}
     ]
   end
