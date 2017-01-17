@@ -9,6 +9,7 @@ defmodule Mix.Tasks.Compile.Apidoc do
   @default_input_dir Path.join(~w"web controllers")
   @default_output_dir  Path.join(~w"priv static apidoc")
 
+  @doc false
   def run(_) do
 
     config = Mix.Project.config[:apidoc]
@@ -21,14 +22,12 @@ defmodule Mix.Tasks.Compile.Apidoc do
     apidoc_bin  = config[:apidoc_bin] || Path.join(System.cwd(), @default_apidoc_bin)
     input_dir   = config[:input_dir]  || @default_input_dir
     output_dir  = config[:output_dir] || @default_output_dir
+    extra_args  = config[:extra_args] || []
 
     config_json =
       config
       |> Enum.into(%{})
-      |> Map.delete(:node_bin)
-      |> Map.delete(:apidoc_bin)
-      |> Map.delete(:input_dir)
-      |> Map.delete(:output_dir)
+      |> Map.drop(~w(node_bin apidoc_bin input_dir output_dir extra_args)a)
       |> Poison.encode!
 
     build_dir = Mix.Project.build_path
@@ -42,7 +41,7 @@ defmodule Mix.Tasks.Compile.Apidoc do
     IO.write apidoc_json, config_json
     File.close apidoc_json
 
-    params = ["-i", input_dir, "-o", output_dir, "-c", build_dir]
+    params = ["-i", input_dir, "-o", output_dir, "-c", build_dir] ++ extra_args
     run_apidoc(node_bin, apidoc_bin, params)
   end
 
