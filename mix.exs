@@ -6,12 +6,12 @@ defmodule MixApidoc.Mixfile do
      version: "0.3.0",
      description: "A mix task that triggers apidoc to create documentation " <>
                   "for RESTful web APIs from inline code annotations.",
-     package: package,
+     package: package(),
      elixir: "~> 1.0",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      docs: [extras: ["README.md"]],
-     deps: deps]
+     deps: deps()]
   end
 
   def package do
