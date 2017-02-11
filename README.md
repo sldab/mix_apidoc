@@ -83,8 +83,15 @@ apidoc_bin: "apidoc"
 ```
 
 Apart from those mix task specific parameters, you can set all apidoc parameters
-as described on the [apidoc](http://apidocjs.com "apidoc/#configuration-settings")
+as described on the [apidoc](http://apidocjs.com/#configuration)
 webpage.
+
+Additionally, you can specify additional command line arguments by specifying
+the following configuration parameter in the config:
+
+```elixir
+extra_args: ["-e", "admin", "-t", "/path/to/custom/template"]
+```
 
 ## Running the task
 
