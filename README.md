@@ -17,28 +17,51 @@ documentation for RESTful web APIs.
        ...]
     end
 
-    # It makes sense to have an apidoc config per mix environment as URLs will
-    # most likely differ between your environments.
-    defp apidoc(:dev) do
-      # Omit `sampleUrl` if you don't want to have sample requests in the
-      # documentation.
-      [url: "http://localhost:4000/api",
-       sampleUrl: "http://localhost:4000/api"] ++ apidoc
-    end
-
-    defp apidoc do
+    # Do not generate apidoc documentation for `test` environment
+    defp apidoc(env) when env not in [:dev, :prod], do: []
+    defp apidoc(env) do
+      base_url = case env do
+        :dev  -> "http://localhost:4000"
+        :prod -> "https://prod-host"
+      end
       # See http://apidocjs.com/#configuration-settings for a full list of
       # parameters. Note: Use Elixir terms as values. They will be translated
       # to JSON and stored in `_build/dev/apidoc.json`.
-      [name: "Your API",
+      #
+      # Omit `sampleUrl` if you don't want to have sample requests in the
+      # documentation.
+      [url: "#{base_url}/api",
+       sampleUrl: "#{base_url}/api",
+       name: "Your API",
        version: "1.0.0",
        description: "Your API description",
        title: "Your API Title"]
+
+       # You may also provide a list of nested configs in order to generate
+       # multiple documentations. When doing so, you need to specify a
+       # dedicated `output_dir` for each. Example:
+       #
+       #[[input_dir: Path.join(~w"web controllers public"),
+       #  output_dir: Path.join(~w"priv static apidoc public"),
+       #  url: "#{base_url}/public/api",
+       #  sampleUrl: "#{base_url}/api",
+       #  name: "Your Public API",
+       #  version: "1.0.0",
+       #  description: "Your public API description",
+       #  title: "Your Public API"],
+       # [input_dir: Path.join(~w"web controllers private"),
+       #  output_dir: Path.join(~w"priv static apidoc private"),
+       #  url: "#{base_url}/private/api",
+       #  sampleUrl: "#{base_url}/api",
+       #  name: "Your Private API",
+       #  version: "1.0.0",
+       #  description: "Your private API description",
+       #  title: "Your Private API"]]
     end
 
     def deps do
       # Add it to your dependencies
-      [{:mix_apidoc, "~> 0.1"},
+      [{:mix_apidoc, "~> 0.5"},
        ...]
     end
   ```
@@ -53,7 +76,7 @@ documentation for RESTful web APIs.
   "repository": {
   },
   "dependencies": {
-    "apidoc": ">= 0.14.0"
+    "apidoc": ">= 0.17.6"
   }
 }
 ```
