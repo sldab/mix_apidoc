@@ -4,10 +4,10 @@ defmodule Mix.Tasks.Compile.Apidoc do
   @moduledoc File.read!("README.md")
   @shortdoc "Create documentation for RESTful web APIs"
 
-  @default_node_bin   "node"
-  @default_apidoc_bin Path.join(~w"node_modules apidoc bin apidoc")
-  @default_input_dir  Path.join(~w"web controllers")
+  @default_node_bin "node"
   @default_output_dir Path.join(~w"priv static apidoc")
+
+  @phx_version_gt_13_regex ~r/(1\.[3-]\.\d+|[2-]\.\d+\.\d+)/
 
   @doc false
   def run(_) do
@@ -34,9 +34,9 @@ defmodule Mix.Tasks.Compile.Apidoc do
                 "or list of keyword lists."
     end
 
-    node_bin    = config[:node_bin]   || @default_node_bin
-    apidoc_bin  = config[:apidoc_bin] || Path.join(System.cwd(), @default_apidoc_bin)
-    input_dir   = config[:input_dir]  || @default_input_dir
+    node_bin    = config[:node_bin] || @default_node_bin
+    apidoc_bin  = get_apidoc_bin(config)
+    input_dir   = get_input_dir(config)
     output_dir  = config[:output_dir] || @default_output_dir
     extra_args  = config[:extra_args] || []
 
@@ -89,5 +89,30 @@ defmodule Mix.Tasks.Compile.Apidoc do
 
   defp _handle_result(_error, api_title) do
     Mix.raise "apidoc responded with an error for #{api_title}."
+  end
+
+  defp get_apidoc_bin(config) do
+    phx_ver_req = Mix.Project.config[:deps][:phoenix]
+    cond do
+      config[:apidoc_bin] != nil ->
+        config[:apidoc_bin]
+      phx_ver_req != nil && Regex.run(@phx_version_gt_13_regex, phx_ver_req) ->
+        Path.join([System.cwd()] ++ ~w"assets node_modules apidoc bin apidoc")
+      true ->
+        Path.join([System.cwd()] ++ ~w"node_modules apidoc bin apidoc")
+    end
+  end
+
+  defp get_input_dir(config) do
+    phx_ver_req = Mix.Project.config[:deps][:phoenix]
+    app_name = Mix.Project.config[:app] |> Atom.to_string
+    cond do
+      config[:input_dir] != nil ->
+        config[:input_dir]
+      phx_ver_req != nil && Regex.run(@phx_version_gt_13_regex, phx_ver_req) ->
+        Path.join(~w"lib #{app_name}_web controllers")
+      true ->
+        Path.join(~w"web controllers")
+    end
   end
 end
