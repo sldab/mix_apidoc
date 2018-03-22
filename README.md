@@ -61,7 +61,7 @@ documentation for RESTful web APIs.
 
     def deps do
       # Add it to your dependencies
-      [{:mix_apidoc, "~> 0.5.1"},
+      [{:mix_apidoc, "~> 0.5.2"},
        ...]
     end
   ```
