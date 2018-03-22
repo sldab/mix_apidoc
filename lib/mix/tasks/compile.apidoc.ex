@@ -92,7 +92,7 @@ defmodule Mix.Tasks.Compile.Apidoc do
   end
 
   defp get_apidoc_bin(config) do
-    phx_ver_req = Mix.Project.config[:deps][:phoenix]
+    phx_ver_req = get_phx_version()
     cond do
       config[:apidoc_bin] != nil ->
         config[:apidoc_bin]
@@ -104,7 +104,7 @@ defmodule Mix.Tasks.Compile.Apidoc do
   end
 
   defp get_input_dir(config) do
-    phx_ver_req = Mix.Project.config[:deps][:phoenix]
+    phx_ver_req = get_phx_version()
     app_name = Mix.Project.config[:app] |> Atom.to_string
     cond do
       config[:input_dir] != nil ->
@@ -115,4 +115,6 @@ defmodule Mix.Tasks.Compile.Apidoc do
         Path.join(~w"web controllers")
     end
   end
+
+  defp get_phx_version, do: Application.spec(:phoenix, :vsn) |> to_string
 end
